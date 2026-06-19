@@ -26,7 +26,10 @@ def validate(text):
     nums = re.findall(r'\d+', text)
 
     for n in nums:
-        if int(n) > 32:
+        try:
+            if int(n) > 32:
+                return False
+        except:
             return False
 
     return True
@@ -53,8 +56,10 @@ def encode(text):
                     emoji += ch
 
             result = "_".join(nums)
-            if emoji:
+            if result and emoji:
                 result += emoji
+            elif emoji:
+                result = emoji
 
             out_words.append(result)
 
@@ -95,28 +100,43 @@ def decode(text):
 
     return "\n".join(final)
 
+
+# ---------------- SAFE HANDLER ----------------
+
 @app.on_message()
 def handler(message):
+    try:
+        # 1. فقط پیام واقعی
+        if not hasattr(message, "object_guid"):
+            return
 
-    if message.object_guid != MY_GUID:
+        if message.object_guid != MY_GUID:
+            return
+
+        # 2. متن امن
+        text = getattr(message, "text", "")
+        if not text:
+            return
+
+        # 3. فیلترها
+        if re.search(r'[A-Za-z]', text):
+            return
+
+        if not validate(text):
+            return
+
+        # 4. تبدیل
+        if re.search(r'\d', text):
+            result = decode(text)
+        else:
+            result = encode(text)
+
+        # 5. ارسال امن
+        app.send_text(MY_GUID, result)
+
+    except:
+        # جلوگیری از crash کامل thread
         return
-
-    text = message.text
-    if not text:
-        return
-
-    if re.search(r'[A-Za-z]', text):
-        return
-
-    if not validate(text):
-        return
-
-    if re.search(r'\d', text):
-        result = decode(text)
-    else:
-        result = encode(text)
-
-    app.send_text(MY_GUID, result)
 
 
 print("Bot is running...")
