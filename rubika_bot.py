@@ -1,10 +1,24 @@
 from pyrubi import Client
 import re
+import os
+import sys
 
-app = Client("gf_account.pyrubi")
+# --- SESSION NAME با مسیر کامل و مدیریت خطا ---
+session_file = "gf_account.pyrubi"
 
+# چک کن فایل وجود داره یا نه
+if not os.path.exists(session_file):
+    print(f"❌ Session file '{session_file}' not found!")
+    print(f"📁 Current directory: {os.getcwd()}")
+    print(f"📂 Files: {os.listdir('.')}")
+    sys.exit(1)
+
+app = Client(session_file)
+
+# --- YOUR GUID (سیو مسیج) ---
 MY_GUID = "u0DgaaS04d24caf00b3ea5e7b48d0aff"
 
+# --- LETTER MAP ---
 letters = {
     'ا':'1','آ':'1',
     'ب':'2','پ':'3','ت':'4','ث':'5',
@@ -18,35 +32,47 @@ letters = {
 }
 
 numbers = {v: k for k, v in letters.items()}
-persian_digits = str.maketrans("۰۱۲۳۴۵۶۷۸۹", "0123456789")
 
+persian_digits = str.maketrans(
+    "۰۱۲۳۴۵۶۷۸۹",
+    "0123456789"
+)
 
+# --- VALIDATION ---
 def validate(text):
+    """بررسی اینکه اعداد بزرگتر از 32 نباشن"""
+    if not text:
+        return False
+    
     text = text.translate(persian_digits)
     nums = re.findall(r'\d+', text)
-
+    
     for n in nums:
-        try:
-            if int(n) > 32:
-                return False
-        except:
+        if int(n) > 32:
             return False
-
     return True
 
-
+# --- ENCODE ---
 def encode(text):
+    """تبدیل متن فارسی به کد اعداد"""
+    if not text:
+        return ""
+    
     lines = text.split("\n")
     final = []
-
+    
     for line in lines:
+        if not line.strip():
+            final.append("")
+            continue
+            
         words = line.split()
         out_words = []
-
+        
         for word in words:
             nums = []
             emoji = ""
-
+            
             for ch in word:
                 if ch in letters:
                     nums.append(letters[ch])
@@ -54,95 +80,112 @@ def encode(text):
                     nums.append(ch)
                 else:
                     emoji += ch
-
-            result = "_".join(nums)
-            if result and emoji:
-                result += emoji
-            elif emoji:
-                result = emoji
-
-            out_words.append(result)
-
+            
+            if nums:
+                result = "_".join(nums)
+                if emoji:
+                    result += emoji
+                out_words.append(result)
+            else:
+                out_words.append(emoji if emoji else word)
+        
         final.append("__".join(out_words))
-
+    
     return "\n".join(final)
 
-
+# --- DECODE ---
 def decode(text):
+    """تبدیل کد اعداد به متن فارسی"""
+    if not text:
+        return ""
+    
     text = text.translate(persian_digits)
     lines = text.split("\n")
     final = []
-
+    
     for line in lines:
+        if not line.strip():
+            final.append("")
+            continue
+            
         words = line.split("__")
         out_words = []
-
+        
         for word in words:
+            if not word:
+                out_words.append("")
+                continue
+                
             match = re.match(r'^([\d_]+)(.*)$', word)
-
+            
             if match:
                 code = match.group(1)
                 emoji = match.group(2)
+                
+                result = ""
+                for c in code.split("_"):
+                    if c in numbers:
+                        result += numbers[c]
+                
+                result += emoji
+                out_words.append(result)
             else:
-                code = ""
-                emoji = word
-
-            result = ""
-
-            for c in code.split("_"):
-                if c in numbers:
-                    result += numbers[c]
-
-            result += emoji
-            out_words.append(result)
-
+                out_words.append(word)
+        
         final.append(" ".join(out_words))
-
+    
     return "\n".join(final)
 
-
-# ---------------- SAFE HANDLER ----------------
-
+# --- HANDLER ---
 @app.on_message()
 def handler(message):
     try:
-        # 1. فقط پیام واقعی
-        if not hasattr(message, "object_guid"):
-            return
-
+        # فقط پیام‌های خودت
         if message.object_guid != MY_GUID:
             return
-
-        # 2. متن امن
-        text = getattr(message, "text", "")
+        
+        text = message.text
         if not text:
             return
-
-        # 3. فیلترها
+        
+        # جلوگیری از زبان انگلیسی
         if re.search(r'[A-Za-z]', text):
             return
-
+        
+        # validate numbers
         if not validate(text):
+            app.send_text(MY_GUID, "❌ خطا: اعداد بیشتر از 32 مجاز نیستند!")
             return
-
-        # 4. تبدیل
+        
+        # auto detect encode/decode
         if re.search(r'\d', text):
             result = decode(text)
         else:
             result = encode(text)
-
-        # 5. ارسال امن
+        
+        # چک کن نتیجه خالی نباشه
+        if not result:
+            result = "⚠️ نتیجه خالی است!"
+        
         app.send_text(MY_GUID, result)
+        
+    except Exception as e:
+        # مدیریت خطاهای ناگهانی
+        error_msg = f"❌ خطا: {str(e)}"
+        try:
+            app.send_text(MY_GUID, error_msg)
+        except:
+            print(error_msg)
 
-    except:
-        # جلوگیری از crash کامل thread
-        return
+# --- START BOT ---
+print("🤖 Bot is starting...")
+print(f"📁 Session file: {session_file}")
+print(f"📂 Current directory: {os.getcwd()}")
+print(f"📄 Files: {os.listdir('.')}")
 
-
-print("Bot is running...")
-app.run()
-cd ~/rubika-bot-gf
-nano rubika_bot.py  # کد جدید رو کپی کن
-git add rubika_bot.py
-git commit -m "fix all bugs and add error handling"
-git push
+try:
+    print("✅ Bot is running...")
+    app.run()
+except Exception as e:
+    print(f"❌ Fatal error: {e}")
+    sys.exit(1)
