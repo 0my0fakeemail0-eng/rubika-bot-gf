@@ -1,7 +1,7 @@
 from pyrubi import Client
 import re
 
-app = Client("gf_account")
+app = Client("gf_account", manual=False)
 
 MY_GUID = "u0DgaaS04d24caf00b3ea5e7b48d0aff"
 
