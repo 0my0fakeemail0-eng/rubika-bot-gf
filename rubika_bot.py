@@ -1,20 +1,35 @@
 from pyrubi import Client
 import re
 import os
-import json
+import sys
+import time
 
-# --- Load session from JSON env var ---
-SESSION_JSON = os.getenv("SESSION_JSON")
+print("🤖 Starting bot...")
 
-if not SESSION_JSON:
-    print("❌ SESSION_JSON not found in environment!")
-    exit(1)
+# شماره از محیط
+PHONE = os.getenv("RUBIKA_PHONE")
+if not PHONE:
+    print("❌ RUBIKA_PHONE not set!")
+    sys.exit(1)
 
-# Save session to file
-with open("session.json", "w") as f:
-    f.write(SESSION_JSON)
+# با شماره لاگین کن
+app = Client()
+app.login(phone=PHONE)
 
-app = Client("session.json")
+# بعد از لاگین، یه مدت صبر کن تا کد برسه
+print("📱 Code sent to your phone!")
+print("⏳ Waiting 30 seconds for you to set RUBIKA_CODE...")
+time.sleep(30)
+
+# کد رو از محیط بگیر
+CODE = os.getenv("RUBIKA_CODE")
+if not CODE:
+    print("❌ RUBIKA_CODE not set!")
+    sys.exit(1)
+
+# کد رو تایید کن
+app.verify_code(code=CODE)
+print("✅ Logged in successfully!")
 
 # --- YOUR GUID ---
 MY_GUID = "u0DgaaS04d24caf00b3ea5e7b48d0aff"

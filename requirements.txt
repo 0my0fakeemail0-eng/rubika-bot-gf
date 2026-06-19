@@ -1,1 +1,3 @@
+pyrogram==2.0.106
+pytgcalls==5.0.2
 pyrubi
