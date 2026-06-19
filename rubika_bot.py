@@ -1,8 +1,38 @@
 from pyrubi import Client
 import re
 import os
+import sys
+import base64
 
-app = Client("gf_account.pyrubi")
+print("🤖 Starting bot...")
+
+# --- ساخت سشن از Base64 ---
+session_file = "gf_account.pyrubi"
+
+# اگه فایل نیست از متغیر محیطی بساز
+if not os.path.exists(session_file):
+    session_b64 = os.getenv("SESSION_BASE64")
+    if session_b64:
+        print("🔄 Creating session from BASE64...")
+        try:
+            with open(session_file, "wb") as f:
+                f.write(base64.b64decode(session_b64))
+            print("✅ Session created from BASE64")
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            sys.exit(1)
+    else:
+        print("❌ SESSION_BASE64 not found!")
+        sys.exit(1)
+
+# چک کن فایل درست ساخته شده
+if os.path.exists(session_file):
+    print(f"✅ Session file ready: {os.path.getsize(session_file)} bytes")
+else:
+    print("❌ Session file missing!")
+    sys.exit(1)
+
+app = Client(session_file)
 
 # --- YOUR GUID ---
 MY_GUID = "u0DgaaS04d24caf00b3ea5e7b48d0aff"
