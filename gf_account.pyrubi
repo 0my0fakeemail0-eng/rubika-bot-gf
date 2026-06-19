@@ -1,0 +1,37 @@
+{
+    "auth": "azopwlgiomuvzipeqvujfubwvwmvttzu",
+    "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIICXQIBAAKBgQC4+u0nKMdcmMU/sQKrXiKV7mAR0fSN2kDnp/QZvB6nUgu2dc8k\nMGXOGyoLZcrFGB7OxvpbLWxE6PHS7nErEStwPxaOgsDq840NBrJdpHOzCrKZnHtM\nRqKx6R4zXJchLNpbOokkJcZXp+NAWLkbMp1yohYoYeWDkmd9R7vMSPcrfwIDAQAB\nAoGABON8yQAm5KeU7u36qBTAzT2ThGUMFYOjG3ww001JchqU/Kl4Y/hzeFL3dX2n\nMjZE+ioAC9DTf664VV6/1ueJQk6KpNNhCdppvyz3lASs2f11sQAP0xOQUfIXwcjW\niIb+mHjoJzkUiCsZ+VF5fYmYZxbO4vfKvqbpJMqr1hPwiYECQQC8/lLAY7D/oiqy\n+w3Cj5mDnwWSp62u7tW5vaYGkfrbfIg3YT/6YwWl3ot9CVTzvqYNYtR/WduPkmLG\n5DK9CNBRAkEA+pBYbiKDWHwXItQi6XLIMDawKHLJQEpmLMK2oj20k7aWMJZuVWau\n4l3rVRBKOUM0wMASdFMg96Eeq1FH/aaazwJAEIzI3FYeitQ9nvzDILWIgPEtAMG0\nQOxjROepoUupRw0ptIfMnXWMahEJ8AIgMVQRoHx2FUzeID12bupO0yTxcQJBAMW7\n+f1YQT0oGH4E2VRPn8nkrpoNE+Mnk4CJXOWmOoZDljzbylCdCzBbG+dyRpDwB4aB\nTU79d0vUm8ZpC54Rx6MCQQCGIx4asi9S1gV107aZ9Ma/iWJCdz3wy3bHwZxjLlOQ\n52h5TxLu4kwbxOP5TdyHESLGEVN5rpL8S3KlAIpqANCT\n-----END RSA PRIVATE KEY-----",
+    "user": {
+        "user_guid": "u0DgaaS04d24caf00b3ea5e7b48d0aff",
+        "first_name": "\ud83e\udec0\ud83e\udec0",
+        "phone": "989040413572",
+        "username": "nanam2013",
+        "avatar_thumbnail": {
+            "file_id": "110743783146398",
+            "mime": "jpg",
+            "dc_id": "420",
+            "access_hash_rec": "1231945760436670670968161851692026061318"
+        },
+        "last_online": 1781903179,
+        "bio": "\ud835\udfd7\ud835\udfcf\ud835\udfd7\ud83e\udd0d\n-\u2730\u1b44",
+        "is_deleted": false,
+        "is_verified": false,
+        "online_time": {
+            "type": "Exact",
+            "exact_time": 1781903179
+        },
+        "saved_music_last_track": {
+            "file_id": 94755794730618,
+            "mime": "mp3",
+            "dc_id": 454,
+            "access_hash_rec": "4937630638830053450296807667672026041717",
+            "file_name": "Vaghti Mizadi Ghadam ~ Musics-Fa.Com.mp3",
+            "width": 0,
+            "height": 0,
+            "time": 193,
+            "size": 7810349,
+            "type": "Music",
+            "music_performer": "Tahas ~ Musics-Fa.Com"
+        }
+    }
+}
