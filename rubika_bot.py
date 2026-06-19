@@ -3,6 +3,8 @@ import re
 import os
 import sys
 
+
+print("📂 فایل‌های داخل پوشه:", os.listdir('.'))
 # --- SESSION NAME با مسیر کامل و مدیریت خطا ---
 session_file = "gf_account.pyrubi"
 
