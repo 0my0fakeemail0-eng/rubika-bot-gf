@@ -2,40 +2,32 @@ from pyrubi import Client
 import re
 import os
 import sys
-import time
+import base64
 
 print("🤖 Starting bot...")
-print("📂 Files in directory:", os.listdir('.'))
 
-# --- ساخت سشن جدید ---
+# --- ساخت سشن از Base64 ---
 session_file = "gf_account.pyrubi"
 
-# پاک کردن فایل سشن قدیمی
-if os.path.exists(session_file):
-    print("🔄 Removing old session file...")
-    os.remove(session_file)
-    print("✅ Old session removed")
+# اگه فایل نیست از متغیر محیطی بساز
+if not os.path.exists(session_file):
+    session_b64 = os.getenv("SESSION_BASE64")
+    if session_b64:
+        print("🔄 Creating session from BASE64...")
+        try:
+            with open(session_file, "wb") as f:
+                f.write(base64.b64decode(session_b64))
+            print("✅ Session created from BASE64")
+        except Exception as e:
+            print(f"❌ Error creating session: {e}")
+            sys.exit(1)
+    else:
+        print("❌ No session file or SESSION_BASE64 env var found!")
+        sys.exit(1)
 
-# گرفتن شماره از محیط
-PHONE = os.getenv("RUBIKA_PHONE")
-if not PHONE:
-    print("❌ Please set RUBIKA_PHONE environment variable")
-    print("Example: 989123456789")
-    sys.exit(1)
+print(f"📂 Session file exists: {os.path.exists(session_file)}")
 
-print(f"📱 Phone: {PHONE}")
-
-# ساخت کلاینت جدید
 app = Client(session_file)
-
-# لاگین با شماره
-try:
-    print("🔄 Logging in...")
-    app.start(phone=PHONE)
-    print("✅ Session created successfully!")
-except Exception as e:
-    print(f"❌ Login error: {e}")
-    sys.exit(1)
 
 # --- YOUR GUID ---
 MY_GUID = "u0DgaaS04d24caf00b3ea5e7b48d0aff"
