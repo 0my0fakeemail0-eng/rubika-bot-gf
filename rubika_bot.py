@@ -141,3 +141,8 @@ def handler(message):
 
 print("Bot is running...")
 app.run()
+cd ~/rubika-bot-gf
+nano rubika_bot.py  # کد جدید رو کپی کن
+git add rubika_bot.py
+git commit -m "fix all bugs and add error handling"
+git push
